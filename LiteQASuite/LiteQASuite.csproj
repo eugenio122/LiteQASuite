@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiteAutomation\LiteAutomation.csproj" />
+    <ProjectReference Include="..\LiteFlow\LiteFlow.csproj" />
+    <ProjectReference Include="..\LiteJson\LiteJson.csproj" />
+    <ProjectReference Include="..\LiteQASuite.Core\LiteQASuite.Core.csproj" />
+    <ProjectReference Include="..\LiteQASuite.Shell\LiteQASuite.Shell.csproj" />
+    <ProjectReference Include="..\LiteShot\LiteShot.csproj" />
+  </ItemGroup>
+
+</Project>

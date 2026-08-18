@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="LiteAutomation/LiteAutomation.csproj" />
+  <Project Path="LiteFlow/LiteFlow.csproj" />
+  <Project Path="LiteJson/LiteJson.csproj" />
+  <Project Path="LiteQASuite.Core/LiteQASuite.Core.csproj" />
+  <Project Path="LiteQASuite.Shell/LiteQASuite.Shell.csproj" />
+  <Project Path="LiteQASuite/LiteQASuite.csproj" />
+  <Project Path="LiteShot/LiteShot.csproj" />
+</Solution>
