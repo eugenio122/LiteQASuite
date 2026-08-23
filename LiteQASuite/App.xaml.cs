@@ -6,6 +6,7 @@ using LiteQASuite.Core.Session;
 using LiteQASuite.Shell;
 using LiteQASuite.Shell.ViewModels;
 using LiteQASuite.Stub;
+using LiteShot;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,7 +49,7 @@ public partial class App : Application
         var context = new ModuleContext(events, session, language);
         var modules = new List<IModule>
         {
-            new StubModule(context)
+            new LiteShotModule(context)
             // depois: new LiteShotModule(context), new LiteFlowModule(context), ...
         };
 

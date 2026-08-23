@@ -1,0 +1,255 @@
+﻿<UserControl x:Class="LiteShot.Views.LiteShotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Brush.Background}"
+             Foreground="{DynamicResource Brush.Foreground}">
+
+    <UserControl.Resources>
+
+        <!-- Espaçamento uniforme entre as linhas do formulário. -->
+        <Thickness x:Key="RowSpacing">0,0,0,12</Thickness>
+
+        <!-- Botões de perfil. RadioButton, e não ToggleButton: um dos dois está
+             sempre aceso, e clicar no que já está ativo não pode apagá-lo.
+
+             Com ToggleButton o clique alterna o IsChecked localmente, esse valor
+             vence o binding OneWay, e como o perfil não mudou nenhuma notificação
+             volta para corrigir o visual — o botão ficava apagado com o perfil
+             ainda ativo. -->
+        <Style x:Key="ProfileToggle" TargetType="RadioButton">
+            <Setter Property="MinWidth" Value="52"/>
+            <Setter Property="Padding" Value="12,5"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Brush.Accent}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource Brush.Accent}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource Brush.AccentForeground}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource Brush.Accent}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="32,28,32,32" MaxWidth="640" HorizontalAlignment="Left">
+
+            <TextBlock Text="{Binding Title}"
+                       Foreground="{DynamicResource Brush.Foreground}"
+                       FontSize="22" FontWeight="SemiBold"
+                       Margin="0,0,0,20"/>
+
+            <!-- ============================ GERAL ============================
+                 Tudo neste bloco só vai para o disco no botão Salvar.
+                 ================================================================ -->
+
+            <CheckBox Content="{Binding LabelShowNotifications}"
+                      IsChecked="{Binding ShowNotifications}"
+                      Foreground="{DynamicResource Brush.Foreground}"
+                      Margin="{StaticResource RowSpacing}"/>
+
+            <CheckBox Content="{Binding LabelCaptureCursor}"
+                      IsChecked="{Binding CaptureCursor}"
+                      Foreground="{DynamicResource Brush.Foreground}"
+                      Margin="{StaticResource RowSpacing}"/>
+
+            <CheckBox Content="{Binding LabelHotkeyEnabled}"
+                      IsChecked="{Binding HotkeyEnabled}"
+                      Foreground="{DynamicResource Brush.Foreground}"
+                      Margin="0,0,0,20"/>
+
+            <Grid Margin="{StaticResource RowSpacing}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="170"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{Binding LabelImageFormat}"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}"
+                           VerticalAlignment="Center"/>
+
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding ImageFormats}"
+                          SelectedItem="{Binding ImageFormat}"
+                          MaxWidth="280" HorizontalAlignment="Left" MinWidth="240"/>
+            </Grid>
+
+            <Grid Margin="{StaticResource RowSpacing}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="170"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{Binding LabelResolution}"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}"
+                           VerticalAlignment="Center"/>
+
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding ResolutionOptions}"
+                          SelectedItem="{Binding SelectedResolution}"
+                          DisplayMemberPath="Label"
+                          MaxWidth="280" HorizontalAlignment="Left" MinWidth="240"/>
+            </Grid>
+
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="170"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding LabelHotkey}"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBox x:Name="HotkeyBox"
+                             Text="{Binding HotkeyDisplay, Mode=OneWay}"
+                             IsReadOnly="True"
+                             MinWidth="180"
+                             VerticalContentAlignment="Center"
+                             PreviewKeyDown="HotkeyBox_PreviewKeyDown"
+                             PreviewKeyUp="HotkeyBox_PreviewKeyUp"/>
+
+                    <Button Content="{Binding LabelHotkeyReset}"
+                            Command="{Binding ResetHotkeyCommand}"
+                            Padding="12,4" Margin="8,0,0,0"/>
+                </StackPanel>
+
+                <!-- Dica fixa e aviso da tecla ficam sob o campo que os gerou.
+                     O aviso some quando não há texto, via gatilho no próprio
+                     estilo — sem conversor. -->
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" MaxWidth="380"
+                            HorizontalAlignment="Left">
+
+                    <TextBlock Text="{Binding LabelHotkeyHint}"
+                               Foreground="{DynamicResource Brush.ForegroundMuted}"
+                               FontSize="11" TextWrapping="Wrap"/>
+
+                    <TextBlock Text="{Binding HotkeyMessage}"
+                               Foreground="{DynamicResource Brush.Foreground}"
+                               FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HotkeyMessage}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                </StackPanel>
+            </Grid>
+
+            <!-- ============================ PERFIL ===========================
+                 Agrupado por assunto, não por comportamento: assim como o resto da
+                 tela, tudo aqui só vai para o disco no botão Salvar.
+
+                 Os botões P1/P2 daqui são uma ABA DE EDIÇÃO — escolhem qual perfil
+                 se está configurando. Quem alterna o perfil *ativo* é a barra de
+                 ferramentas, durante a captura.
+                 ================================================================ -->
+
+            <Border Background="{DynamicResource Brush.SurfaceAlt}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1"
+                    Padding="20,16,20,18">
+                <StackPanel>
+
+                    <TextBlock Text="{Binding LabelProfileTitle}"
+                               Foreground="{DynamicResource Brush.Foreground}"
+                               FontSize="15" FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding LabelProfileHint}"
+                               Foreground="{DynamicResource Brush.ForegroundMuted}"
+                               FontSize="12" TextWrapping="Wrap"
+                               Margin="0,4,0,14"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16"
+                                VerticalAlignment="Center">
+
+                        <TextBlock Text="{Binding LabelProfileEditing}"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
+
+                        <RadioButton Style="{StaticResource ProfileToggle}"
+                                     GroupName="SettingsProfile"
+                                     Content="{Binding LabelProfile1}"
+                                     IsChecked="{Binding IsProfile1Active, Mode=OneWay}"
+                                     Command="{Binding SelectProfileCommand}"
+                                     CommandParameter="1"/>
+
+                        <RadioButton Style="{StaticResource ProfileToggle}"
+                                     GroupName="SettingsProfile"
+                                     Content="{Binding LabelProfile2}"
+                                     IsChecked="{Binding IsProfile2Active, Mode=OneWay}"
+                                     Command="{Binding SelectProfileCommand}"
+                                     CommandParameter="2"/>
+                    </StackPanel>
+
+                    <CheckBox Content="{Binding LabelNavbarVertical}"
+                              IsChecked="{Binding NavbarVertical}"
+                              Foreground="{DynamicResource Brush.Foreground}"
+                              Margin="0,0,0,10"/>
+
+                    <CheckBox Content="{Binding LabelKeepSelection}"
+                              IsChecked="{Binding KeepSelection}"
+                              Foreground="{DynamicResource Brush.Foreground}"
+                              Margin="0,0,0,10"/>
+
+                    <CheckBox Content="{Binding LabelKeepNavbarPosition}"
+                              IsChecked="{Binding KeepNavbarPosition}"
+                              Foreground="{DynamicResource Brush.Foreground}"/>
+
+                </StackPanel>
+            </Border>
+
+            <!-- Salvar fecha a tela inteira, incluindo o bloco de perfil acima.
+                 Fica no fim de propósito: um commit no meio do formulário sugere
+                 que ele só vale para o que está antes dele. -->
+            <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
+                <Button Content="{Binding LabelSave}"
+                        Command="{Binding SaveCommand}"
+                        Padding="20,6" MinWidth="110"/>
+
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}"
+                           VerticalAlignment="Center" Margin="14,0,0,0"
+                           TextWrapping="Wrap" MaxWidth="360"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

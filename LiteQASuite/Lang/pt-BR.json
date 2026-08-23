@@ -9,5 +9,62 @@
   "Stub": {
     "Module.Name": "Stub (teste da casca)",
     "Greeting": "A casca está funcionando. Este é um módulo de teste hospedado pela ShellWindow — quando o LiteShot ficar pronto, ele toma este lugar."
+  },
+  "LiteShot": {
+    "Module.Name": "LiteShot",
+
+    "Settings.Title": "Opções do LiteShot",
+    "Settings.ShowNotifications": "Mostrar notificações ao copiar/salvar",
+    "Settings.CaptureCursor": "Capturar cursor na imagem",
+    "Settings.HotkeyEnabled": "Capturar por atalho global",
+    "Settings.ImageFormat": "Formato de imagem:",
+    "Settings.Resolution": "Resolução (limitador):",
+    "Settings.Hotkey": "Tecla de atalho:",
+    "Settings.Hotkey.Reset": "Padrão",
+    "Settings.Hotkey.Reserved": "Esta tecla é usada como atalho interno do LiteShot. Escolha outra.",
+    "Settings.Hotkey.Hint": "Clique no campo e pressione a combinação desejada.",
+    "Settings.Hotkey.NoModifier": "Sem Ctrl, Alt ou Shift, esta tecla deixa de funcionar nos outros programas enquanto o LiteQASuite estiver aberto.",
+    "Settings.Save": "Salvar",
+    "Settings.Saved": "Configurações salvas.",
+    "Settings.SaveFailed": "Não foi possível salvar as configurações.",
+
+    "Settings.Profile.Title": "Perfil de captura",
+    "Settings.Profile.Hint": "Cada perfil guarda a área de seleção, a posição da barra e as cores, ajustadas enquanto você captura. Aqui você define como cada um se comporta. Na barra de ferramentas, P1 e P2 alternam qual está em uso.",
+    "Settings.Profile.Editing": "Configurando:",
+    "Settings.Profile.1": "P1",
+    "Settings.Profile.2": "P2",
+    "Settings.NavbarVertical": "Barra de ferramentas vertical",
+    "Settings.KeepSelection": "Lembrar área de seleção",
+    "Settings.KeepNavbarPosition": "Lembrar posição da barra",
+
+    "Resolution.Auto": "Auto (tamanho real)",
+    "Resolution.4K": "3840x2160 (4K — não recomendado)",
+    "Resolution.QHD": "2560x1440 (QHD — não recomendado)",
+    "Resolution.FHD": "1920x1080 (Full HD)",
+    "Resolution.1600": "1600x900",
+    "Resolution.1366": "1366x768",
+    "Resolution.720p": "1280x720 (HD)",
+    "Resolution.480p": "854x480 (SD)",
+    "Resolution.Custom": " (personalizado)",
+
+    "Settings.Hotkey.Unavailable": "O Windows recusou este atalho — outro programa já está usando a combinação. Escolha outra.",
+
+    "Toolbar.Copy": "Copiar",
+    "Toolbar.Save": "Salvar",
+    "Toolbar.Close": "Fechar",
+
+    "Overlay.Hint": "Arraste para selecionar   ·   Ctrl+A este monitor   ·   Ctrl+C copia   ·   Ctrl+S salva   ·   Ctrl+(+/−) espessura   ·   Esc cancela",
+
+    "Toolbar.Pen": "Caneta",
+    "Toolbar.Line": "Linha",
+    "Toolbar.Arrow": "Seta",
+    "Toolbar.Shape": "Forma",
+    "Toolbar.Highlighter": "Marcador",
+    "Toolbar.Text": "Texto",
+    "Toolbar.Color": "Cor",
+    "Toolbar.Undo": "Desfazer",
+    "Toolbar.Redo": "Refazer",
+    "Toolbar.Profile1": "Perfil 1",
+    "Toolbar.Profile2": "Perfil 2"
   }
 }

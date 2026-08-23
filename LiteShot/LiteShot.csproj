@@ -5,8 +5,12 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Necessário para o P/Invoke com ponteiro em GetKeyNameText (Platform/NativeMethods.cs) -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <!-- A seta de dependência aponta só para o Core. Nunca para outro módulo, nunca para o Shell. -->
   <ItemGroup>
     <ProjectReference Include="..\LiteQASuite.Core\LiteQASuite.Core.csproj" />
   </ItemGroup>

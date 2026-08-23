@@ -15,6 +15,10 @@
     <ProjectReference Include="..\LiteQASuite.Core\LiteQASuite.Core.csproj" />
     <ProjectReference Include="..\LiteQASuite.Shell\LiteQASuite.Shell.csproj" />
     <ProjectReference Include="..\LiteShot\LiteShot.csproj" />
+
+    <None Update="Lang\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
