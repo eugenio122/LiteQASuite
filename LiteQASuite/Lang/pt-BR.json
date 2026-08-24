@@ -6,10 +6,7 @@
   "Shell": {
     "App.Title": "LiteQASuite"
   },
-  "Stub": {
-    "Module.Name": "Stub (teste da casca)",
-    "Greeting": "A casca está funcionando. Este é um módulo de teste hospedado pela ShellWindow — quando o LiteShot ficar pronto, ele toma este lugar."
-  },
+ 
   "LiteShot": {
     "Module.Name": "LiteShot",
 
