@@ -1,35 +1,41 @@
-﻿using LiteQASuite.Core;
+﻿using LiteQASuite.Core.Localization;
 using LiteQASuite.Core.Modules;
 using LiteQASuite.Core.Mvvm;
+using LiteQASuite.Core.Workspace;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LiteQASuite.Shell.ViewModels;
 
 /// <summary>
-/// ViewModel da janela principal (a casca). Recebe a lista de módulos já
-/// instanciados pelo composition root — só como <see cref="IModule"/>, sem
-/// conhecer nenhuma implementação concreta — e controla qual está selecionado.
-/// A <see cref="IModule.View"/> do módulo selecionado é hospedada na área de
-/// conteúdo da ShellWindow.
+/// ViewModel da janela principal (a casca). Monta a navegação unificada: a tela
+/// de configurações no topo (como o "Geral" antigo) seguida dos módulos, todos
+/// como <see cref="NavItem"/>. A área de conteúdo hospeda a <see cref="NavItem.View"/>
+/// do item selecionado.
 /// </summary>
 public sealed class ShellViewModel : ViewModelBase
 {
-    /// <summary>Módulos disponíveis, na ordem em que o composition root os entregou.</summary>
-    public IReadOnlyList<IModule> Modules { get; }
+    /// <summary>Entradas da navegação: Configurações no topo, depois os módulos.</summary>
+    public IReadOnlyList<NavItem> NavItems { get; }
 
-    private IModule? _selectedModule;
+    private NavItem? _selected;
 
-    /// <summary>Módulo atualmente exibido; a navegação lateral controla isto.</summary>
-    public IModule? SelectedModule
+    /// <summary>Item atualmente exibido; a barra lateral controla isto.</summary>
+    public NavItem? Selected
     {
-        get => _selectedModule;
-        set => SetProperty(ref _selectedModule, value);
+        get => _selected;
+        set => SetProperty(ref _selected, value);
     }
 
-    public ShellViewModel(IReadOnlyList<IModule> modules)
+    public ShellViewModel(IReadOnlyList<IModule> modules, ILanguageManager language, IWorkspaceService workspace)
     {
-        Modules = modules;
-        SelectedModule = modules.FirstOrDefault();
+        var items = new List<NavItem>
+        {
+            new SettingsNavItem(new ConfigViewModel(workspace))   // no topo, como o "Geral" antigo
+        };
+        items.AddRange(modules.Select(m => new ModuleNavItem(m, language)));
+
+        NavItems = items;
+        Selected = NavItems.FirstOrDefault();   // abre na Config, como o antigo abria na Geral
     }
 }

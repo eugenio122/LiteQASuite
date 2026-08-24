@@ -1,6 +1,8 @@
 ﻿using LiteQASuite.Core.Events;
 using LiteQASuite.Core.Localization;
+using LiteQASuite.Core.Notifications;
 using LiteQASuite.Core.Session;
+using LiteQASuite.Core.Workspace;
 
 namespace LiteQASuite.Core.Modules;
 
@@ -27,7 +29,17 @@ namespace LiteQASuite.Core.Modules;
 /// <c>Language.ForModule(Id)</c> no próprio construtor, e reage à troca de idioma
 /// assinando <c>Language.LanguageChanged</c>.
 /// </param>
+/// <param name="Notifications">
+/// Notificações transitórias (toasts) da casca. O módulo decide o quê e quando
+/// notificar; a casca decide como aparece.
+/// </param>
+/// <param name="Workspace">
+/// Estrutura de pastas compartilhada (ciclos/cenários). O módulo resolve caminhos
+/// por ela e é dono só do conteúdo dos próprios arquivos.
+/// </param>
 public sealed record ModuleContext(
     IEventBus Events,
     ISessionContext Session,
-    ILanguageManager Language);
+    ILanguageManager Language,
+    INotificationService Notifications,
+    IWorkspaceService Workspace);
