@@ -1,14 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LiteQASuite.Core\LiteQASuite.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- O motor invisível da exportação: abre e edita o .docx sem precisar do Word
+         instalado. Mesma versão que o LiteFlow 1.x usava, para não trocar de
+         comportamento no meio de uma migração. (O PDF é outra história: a conversão
+         continua exigindo Word ou LibreOffice na máquina.) -->
+		<PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+		<PackageReference Include="DocumentFormat.OpenXml.Framework" Version="3.5.1" />
+	</ItemGroup>
+
+	<!-- A seta de dependência aponta só para o Core. Nunca para outro módulo, nunca para o Shell. -->
+	<ItemGroup>
+		<ProjectReference Include="..\LiteQASuite.Core\LiteQASuite.Core.csproj" />
+	</ItemGroup>
 
 </Project>

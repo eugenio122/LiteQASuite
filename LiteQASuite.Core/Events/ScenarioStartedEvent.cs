@@ -11,13 +11,19 @@ namespace LiteQASuite.Core.Events;
 ///
 /// Não carrega os metadados do relatório de propósito: eles vivem no <c>.lflow</c>
 /// e são assunto do LiteFlow. Este evento diz só <i>onde</i> o cenário mora.
+///
+/// <b>O <see cref="ScenarioFolderPath"/> é o que basta para criar um arquivo
+/// irmão</b> — o squad e o ciclo vêm junto para quem precisar rotular ou agrupar,
+/// não para remontar caminho na mão.
 /// </summary>
 /// <param name="ScenarioId">O ID do cenário (antigo "Nome do Arquivo").</param>
+/// <param name="Squad">O squad/projeto ao qual o ciclo pertence.</param>
 /// <param name="Cycle">O ciclo/sprint ao qual o cenário pertence.</param>
 /// <param name="ScenarioFolderPath">Caminho absoluto da pasta do cenário.</param>
 /// <param name="Timestamp">Momento do início.</param>
 public sealed record ScenarioStartedEvent(
     string ScenarioId,
+    string Squad,
     string Cycle,
     string ScenarioFolderPath,
     DateTime Timestamp);

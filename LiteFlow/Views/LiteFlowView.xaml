@@ -1,0 +1,438 @@
+﻿<UserControl x:Class="LiteFlow.Views.LiteFlowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Brush.Background}"
+             Foreground="{DynamicResource Brush.Foreground}">
+
+    <UserControl.InputBindings>
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}"/>
+    </UserControl.InputBindings>
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <Style TargetType="TextBlock" x:Key="FieldLabel">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.ForegroundMuted}"/>
+            <Setter Property="Margin" Value="0,12,0,4"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="SectionTitle">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style TargetType="Border" x:Key="Divider">
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="0,18,0,14"/>
+            <Setter Property="Background" Value="{DynamicResource Brush.Border}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <DockPanel>
+
+        <!-- ============================ BARRA SUPERIOR ============================ -->
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="0,0,0,1"
+                Padding="10,8">
+            <DockPanel>
+
+                <TextBlock DockPanel.Dock="Right"
+                           Text="{Binding ScenarioLabel}"
+                           VerticalAlignment="Center"
+                           FontWeight="SemiBold"
+                           Margin="12,0,0,0"
+                           Foreground="{DynamicResource Brush.ForegroundMuted}"/>
+
+                <StackPanel Orientation="Horizontal">
+
+                    <ToggleButton IsChecked="{Binding IsRecording}"
+                                  Content="{Binding RecordingLabel}"
+                                  IsEnabled="{Binding HasScenario}"
+                                  MinWidth="96"
+                                  Padding="10,4"/>
+
+                    <Button Content="{Binding LabelSave}"
+                            Command="{Binding SaveCommand}"
+                            Padding="10,4"
+                            Margin="8,0,0,0"/>
+
+                    <Button Content="{Binding LabelRestart}"
+                            Command="{Binding RestartScenarioCommand}"
+                            Padding="10,4"
+                            Margin="8,0,0,0"/>
+
+                    <Border Width="1" Margin="10,2"
+                            Background="{DynamicResource Brush.Border}"/>
+
+                    <!-- Cor e espessura sobem de Propriedades para cá, como decidido.
+                         Chegam ligadas junto das ferramentas de anotação. -->
+                    <Border Width="26" Height="22"
+                            Background="#FFFF0000"
+                            BorderBrush="{DynamicResource Brush.Border}"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            Opacity="0.4"
+                            ToolTip="{Binding LabelNextSlice}"
+                            VerticalAlignment="Center"/>
+
+                    <Slider Width="110"
+                            Minimum="1" Maximum="20" Value="4"
+                            IsEnabled="False"
+                            Opacity="0.4"
+                            VerticalAlignment="Center"
+                            Margin="8,0,0,0"
+                            ToolTip="{Binding LabelNextSlice}"/>
+
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ================================ RODAPÉ =============================== -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="0,1,0,0"
+                Padding="10,5">
+            <TextBlock Text="{Binding StatusMessage}"
+                       Foreground="{DynamicResource Brush.ForegroundMuted}"
+                       TextTrimming="CharacterEllipsis"/>
+        </Border>
+
+        <!-- ================================ CORPO ================================ -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="340"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ====================== HISTÓRICO DE EVIDÊNCIAS ====================== -->
+            <Border Grid.Column="0"
+                    Background="{DynamicResource Brush.SurfaceAlt}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="{Binding LabelStepsTitle}"
+                               Style="{StaticResource SectionTitle}"
+                               Margin="10,10,10,8"/>
+
+                    <Grid>
+                        <ListBox ItemsSource="{Binding Steps}"
+                                 SelectedItem="{Binding SelectedStep}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 HorizontalContentAlignment="Stretch"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 VirtualizingStackPanel.IsVirtualizing="True"
+                                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+
+                            <ListBox.InputBindings>
+                                <KeyBinding Key="Delete" Command="{Binding DeleteStepCommand}"/>
+                            </ListBox.InputBindings>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="4">
+                                        <Border Background="{DynamicResource Brush.Surface}"
+                                                BorderBrush="{DynamicResource Brush.Border}"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Padding="4">
+                                            <Image Source="{Binding Thumbnail}"
+                                                   Stretch="Uniform"
+                                                   MaxHeight="110"/>
+                                        </Border>
+
+                                        <Border HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
+                                                Margin="-2,-2,0,0"
+                                                MinWidth="20"
+                                                Padding="5,1"
+                                                CornerRadius="9"
+                                                Background="{DynamicResource Brush.Accent}">
+                                            <TextBlock Text="{Binding DisplayIndex}"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       Foreground="{DynamicResource Brush.AccentForeground}"/>
+                                        </Border>
+
+                                        <Border HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Margin="2,0,0,2"
+                                                Padding="5,1"
+                                                CornerRadius="3"
+                                                Background="#FFB35C00"
+                                                Visibility="{Binding IsEvidenceOnly, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Text="{Binding DataContext.LabelEvidenceOnlyBadge, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                       FontSize="9"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+
+                                        <Button Content="✕"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Margin="0,-2,-2,0"
+                                                Width="20" Height="20"
+                                                Padding="0"
+                                                FontSize="10"
+                                                Command="{Binding DataContext.DeleteStepCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="{Binding DataContext.LabelDeleteStep, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <TextBlock Text="{Binding LabelStepsEmpty}"
+                                   TextWrapping="Wrap"
+                                   Margin="12"
+                                   VerticalAlignment="Top"
+                                   IsHitTestVisible="False"
+                                   Foreground="{DynamicResource Brush.ForegroundMuted}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Steps.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </DockPanel>
+            </Border>
+
+            <!-- ============================== CANVAS ============================== -->
+            <Border Grid.Column="1" Background="{DynamicResource Brush.SurfaceAlt}">
+                <Image Source="{Binding CurrentImage}"
+                       Stretch="Uniform"
+                       StretchDirection="DownOnly"
+                       Margin="16"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Border>
+
+            <!-- =========================== BARRA DIREITA ========================== -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource Brush.Surface}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1,0,0,0">
+                <TabControl Background="Transparent" BorderThickness="0">
+
+                    <!-- ....................... PROPRIEDADES ....................... -->
+                    <TabItem Header="{Binding LabelPropertiesTab}">
+                        <DockPanel>
+
+                            <!-- Exportação fixa no rodapé da aba: é o fim do fluxo e
+                                 não deve depender de rolar a lista até embaixo. -->
+                            <Border DockPanel.Dock="Bottom"
+                                    BorderBrush="{DynamicResource Brush.Border}"
+                                    BorderThickness="0,1,0,0"
+                                    Padding="14,10">
+                                <StackPanel IsEnabled="{Binding HasScenario}">
+                                    <TextBlock Text="{Binding LabelExportTitle}" Style="{StaticResource SectionTitle}"/>
+
+                                    <TextBlock Text="{Binding LabelExportHint}"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Margin="0,0,0,8"
+                                               Foreground="{DynamicResource Brush.ForegroundMuted}"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <CheckBox Content="DOCX" IsChecked="{Binding ExportWord}"/>
+                                        <CheckBox Content="PDF" IsChecked="{Binding ExportPdf}" Margin="16,0,0,0"/>
+                                    </StackPanel>
+
+                                    <Button Content="{Binding LabelExportRun}"
+                                            Command="{Binding ExportCommand}"
+                                            Padding="12,8"
+                                            FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel Margin="14,14,14,18" IsEnabled="{Binding HasScenario}">
+
+                                    <!-- Evidência selecionada -->
+                                    <TextBlock Text="{Binding LabelEvidenceTitle}" Style="{StaticResource SectionTitle}"/>
+
+                                    <StackPanel IsEnabled="{Binding HasSelectedStep}">
+                                        <TextBlock Text="{Binding LabelEvidenceNote}" Style="{StaticResource FieldLabel}" Margin="0,0,0,4"/>
+                                        <TextBox Text="{Binding SelectedStepNote, UpdateSourceTrigger=PropertyChanged}"
+                                                 AcceptsReturn="True" TextWrapping="Wrap" Height="90"
+                                                 VerticalScrollBarVisibility="Auto"/>
+
+                                        <CheckBox Content="{Binding LabelTextBelowImage}"
+                                                  IsChecked="{Binding SelectedStepTextBelowImage}"
+                                                  Margin="0,10,0,0"/>
+                                        <CheckBox Content="{Binding LabelEvidenceOnly}"
+                                                  IsChecked="{Binding SelectedStepEvidenceOnly}"
+                                                  Margin="0,6,0,0"/>
+                                    </StackPanel>
+
+                                    <Border Style="{StaticResource Divider}"/>
+
+                                    <!-- Dados do relatório -->
+                                    <TextBlock Text="{Binding LabelPropertiesTitle}" Style="{StaticResource SectionTitle}"/>
+
+                                    <TextBlock Text="{Binding LabelSquad}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding SquadName, Mode=OneWay}" IsReadOnly="True"/>
+
+                                    <TextBlock Text="{Binding LabelCycle}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding CycleName, Mode=OneWay}" IsReadOnly="True"/>
+
+                                    <TextBlock Text="{Binding LabelScenarioId}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding ScenarioId, Mode=OneWay}" IsReadOnly="True"/>
+
+                                    <TextBlock Text="{Binding LabelPrefix}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding FilePrefix, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBlock Text="{Binding LabelTestCase}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding TestCaseName, UpdateSourceTrigger=PropertyChanged}"
+                                             AcceptsReturn="True" TextWrapping="Wrap" Height="46"
+                                             VerticalScrollBarVisibility="Auto"/>
+
+                                    <TextBlock Text="{Binding LabelExecutor}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Executor, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBlock Text="{Binding LabelDate}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding TestDate, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    <TextBlock Text="{Binding LabelComments}" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding Comments, UpdateSourceTrigger=PropertyChanged}"
+                                             AcceptsReturn="True" TextWrapping="Wrap" Height="64"
+                                             VerticalScrollBarVisibility="Auto"/>
+
+                                    <TextBlock Text="{Binding LabelLayout}" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox SelectedIndex="{Binding LayoutIndex}">
+                                        <ComboBoxItem Content="{Binding LabelLayoutPadrao}"/>
+                                        <ComboBoxItem Content="{Binding LabelLayoutMobile}"/>
+                                    </ComboBox>
+
+                                    <TextBlock Text="{Binding LabelMobileColumns}" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox ItemsSource="{Binding MobileColumnOptions}"
+                                              SelectedItem="{Binding MobileColumns}"
+                                              IsEnabled="{Binding IsMobileLayout}"/>
+
+                                    <Border Style="{StaticResource Divider}"/>
+
+                                    <!-- Template -->
+                                    <TextBlock Text="{Binding LabelTemplateTitle}" Style="{StaticResource SectionTitle}"/>
+
+                                    <!-- TextBox, e não TextBlock, para o nome do template poder
+                                         ser selecionado e copiado. Trimming não existe aqui:
+                                         é propriedade de TextBlock. -->
+                                    <TextBox Text="{Binding TemplateName, Mode=OneWay}"
+                                             IsReadOnly="True"
+                                             ToolTip="{Binding TemplateName}"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                        <Button Content="{Binding LabelTemplateImport}"
+                                                Command="{Binding ImportTemplateCommand}"
+                                                Padding="10,5"/>
+                                        <Button Content="{Binding LabelTemplateRemove}"
+                                                Command="{Binding RemoveTemplateCommand}"
+                                                Padding="10,5"
+                                                Margin="8,0,0,0"/>
+                                    </StackPanel>
+
+                                    <CheckBox Content="{Binding LabelTemplateAsDefault}"
+                                              IsChecked="{Binding UseTemplateAsDefault}"
+                                              IsEnabled="{Binding HasTemplate}"
+                                              Margin="0,10,0,0"/>
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </TabItem>
+
+                    <!-- ......................... WORKSPACE ......................... -->
+                    <TabItem Header="{Binding LabelWorkspaceTab}">
+                        <DockPanel Margin="10">
+
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,4,0,10">
+                                <Button Content="{Binding LabelStartScenario}"
+                                        Command="{Binding StartScenarioCommand}"
+                                        Padding="10,5"/>
+                                <Button Content="{Binding LabelRefresh}"
+                                        Command="{Binding RefreshWorkspaceCommand}"
+                                        Padding="10,5"
+                                        Margin="8,0,0,0"/>
+                            </StackPanel>
+
+                            <Grid>
+                                <TreeView x:Name="WorkspaceTreeView"
+                                          ItemsSource="{Binding WorkspaceTree}"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          MouseDoubleClick="OnWorkspaceTreeDoubleClick"
+                                          PreviewMouseRightButtonDown="OnWorkspaceTreeRightClick">
+
+                                    <TreeView.ContextMenu>
+                                        <!-- O PlacementTarget é a própria TreeView, então o item
+                                             sob o cursor chega pelo SelectedItem — e o clique
+                                             direito passa a selecionar (ver o code-behind). -->
+                                        <ContextMenu>
+                                            <MenuItem Header="{Binding LabelOpen}"
+                                                      Command="{Binding OpenNodeCommand}"
+                                                      CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            <MenuItem Header="{Binding LabelReveal}"
+                                                      Command="{Binding RevealNodeCommand}"
+                                                      CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            <Separator/>
+                                            <MenuItem Header="{Binding LabelDeleteScenario}"
+                                                      Command="{Binding DeleteScenarioCommand}"
+                                                      CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                        </ContextMenu>
+                                    </TreeView.ContextMenu>
+
+                                    <TreeView.ItemTemplate>
+                                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{Binding Icon}"
+                                                      Width="15" Height="15"
+                                                      Stretch="Uniform"
+                                                      Margin="0,0,6,0"
+                                                      VerticalAlignment="Center"
+                                                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"/>
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                           Padding="0,2"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </HierarchicalDataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+
+                                <TextBlock Text="{Binding LabelWorkspaceEmpty}"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Top"
+                                           Margin="4,8,4,0"
+                                           IsHitTestVisible="False"
+                                           Foreground="{DynamicResource Brush.ForegroundMuted}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding WorkspaceTree.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </DockPanel>
+                    </TabItem>
+
+                </TabControl>
+            </Border>
+        </Grid>
+    </DockPanel>
+</UserControl>

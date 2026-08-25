@@ -1,4 +1,5 @@
-﻿using LiteQASuite.Core.Events;
+﻿using LiteFlow;
+using LiteQASuite.Core.Events;
 using LiteQASuite.Core.Localization;
 using LiteQASuite.Core.Modules;
 using LiteQASuite.Core.Session;
@@ -76,11 +77,21 @@ public partial class App : Application
         }
 
         // --- Contexto compartilhado e módulos ---
+        //
+        // A ordem desta lista é a ordem da barra lateral, e ela segue o pipeline do
+        // produto: capturar (LiteShot) → editar a evidência (LiteFlow) → descrever o
+        // cenário (LiteJson) → gerar o código (LiteAutomation).
+        //
+        // Todos os módulos são instanciados aqui, no arranque, mesmo que o usuário
+        // nunca navegue até eles: o LiteShot precisa registrar o atalho global, e o
+        // LiteFlow precisa estar de pé para receber a captura de quem estiver
+        // trabalhando em qualquer outra tela.
         var context = new ModuleContext(events, session, language, notifications, workspace);
         _modules = new List<IModule>
         {
-            new LiteShotModule(context)
-            // depois: new LiteFlowModule(context), new LiteJsonModule(context), new LiteAutomationModule(context)
+            new LiteShotModule(context),
+            new LiteFlowModule(context)
+            // depois: new LiteJsonModule(context), new LiteAutomationModule(context)
         };
 
         // --- Casca ---
